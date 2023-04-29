@@ -1,4 +1,5 @@
 const express = require('express')
+const cors = require('cors');
 const { connectToDb, getDb, closeDb } = require('./db/db')
 
 // initialize app
@@ -6,6 +7,8 @@ const app = express()
 // app.listen(3000, '192.168.1.100', () => {
 //     console.log('app listening on port 3000')
 // })
+
+app.use(cors());
 
 // // listening port 3000
 app.listen(3000, () => {
@@ -44,4 +47,12 @@ app.get('/users', connect, (req, res) => {
             console.log('err')
             res.status(500).json({err: '123'})
         })
+})
+
+// projects
+
+// api to get all the projects
+app.get('/projects', connect, async (req, res) => {
+    let result = await db.collection('Projects').find().toArray();
+    res.json(result);
 })
