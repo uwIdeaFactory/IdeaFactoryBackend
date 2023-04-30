@@ -56,3 +56,13 @@ app.get('/projects', connect, async (req, res) => {
     let result = await db.collection('Projects').find().toArray();
     res.json(result);
 })
+
+// api to post project
+app.post('/post', connect, async (req, res) => {
+    let newProject = {};
+    newProject.pname = req.body.pname;
+    newProject.preview = req.body.preview;
+    newProject.detail = req.body.detail;
+    // missing tag, roles, contact for now
+    newProject.owner = req.body.owner;
+})
