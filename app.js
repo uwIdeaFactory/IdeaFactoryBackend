@@ -65,4 +65,7 @@ app.post('/post', connect, async (req, res) => {
     newProject.detail = req.body.detail;
     // missing tag, roles, contact for now
     newProject.owner = req.body.owner;
+    newProject.location = req.body.location;
+
+    await db.collection('Projects').insertOne(newProject);
 })
