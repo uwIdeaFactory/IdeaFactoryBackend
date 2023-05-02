@@ -19,7 +19,7 @@ jobs:
           command: npm run test
           name: Run tests
       - persist_to_workspace:
-          root: ../IdeaFactoryBackend
+          root: ..
           paths:
             - .
 
