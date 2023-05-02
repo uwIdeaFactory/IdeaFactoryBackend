@@ -4,15 +4,12 @@ const { connectToDb, getDb, closeDb } = require('./db/db')
 
 // initialize app
 const app = express()
-// app.listen(3000, '192.168.1.100', () => {
-//     console.log('app listening on port 3000')
-// })
 
 app.use(express.json());
 app.use(cors());
 
 // // listening port 3000
-app.listen(3000, () => {
+const server = app.listen(3000, () => {
     console.log('app listening on port 3000')
 })
 
@@ -70,4 +67,7 @@ app.post('/post', connect, async (req, res) => {
     newProject.location = req.body.location;
     
     await db.collection('Projects').insertOne(newProject);
+    res.send('posted');
 })
+
+module.exports = server;
