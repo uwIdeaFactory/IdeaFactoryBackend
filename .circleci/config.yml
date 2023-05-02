@@ -19,13 +19,13 @@ jobs:
           command: npm run test
           name: Run tests
       - persist_to_workspace:
-          root: ~/IdeaFactoryBackend
+          root: ../IdeaFactoryBackend
           paths:
             - .
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
-workflows:
+workflows:z
   build_test_deploy: # this can be any name you choose
     jobs:
       - test
