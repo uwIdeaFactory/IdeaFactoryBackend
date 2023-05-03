@@ -4,16 +4,14 @@ const { connectToDb, getDb, closeDb } = require('./db/db')
 
 // initialize app
 const app = express()
-// app.listen(3000, '192.168.1.100', () => {
-//     console.log('app listening on port 3000')
-// })
 
+app.use(express.json());
 app.use(cors());
 
 // // listening port 3000
-app.listen(3000, () => {
-    console.log('app listening on port 3000')
-})
+// const server = app.listen(3000, () => {
+//     console.log('app listening on port 3000')
+// })
 
 // database object
 let db
@@ -53,8 +51,20 @@ app.get('/users', connect, (req, res) => {
 
 // api to get all the projects
 app.get('/projects', connect, async (req, res) => {
-    let result = await db.collection('Projects').find().toArray();
-    res.json(result);
+    // let result = await db.collection('Projects').find().toArray();
+    // res.json(result);
+    let result = []
+    db.collection('Projects')
+        .find()
+        .forEach(project => result.push(project))
+        .then(() => {
+            console.log('successful')
+            res.status(200).json(result)
+        }).then(closeDb)
+        .catch(() => {
+            console.log('err')
+            res.status(500).json({err: '123'})
+        })
 })
 
 // api to post project
@@ -68,5 +78,12 @@ app.post('/post', connect, async (req, res) => {
     // missing tag, roles, contact for now
     newProject.owner = req.body.owner;
     newProject.location = req.body.location;
+<<<<<<< HEAD
+=======
+    
+>>>>>>> e2e65b0142b4dda86ebdb03b8e427178caf43d55
     await db.collection('Projects').insertOne(newProject);
+    res.send('posted');
 })
+
+module.exports = app;
