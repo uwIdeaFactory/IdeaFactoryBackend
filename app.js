@@ -60,12 +60,13 @@ app.get('/projects', connect, async (req, res) => {
 // api to post project
 app.post('/post', connect, async (req, res) => {
     let newProject = {};
+    console.log(req)
     newProject.pname = req.body.pname;
+
     newProject.preview = req.body.preview;
     newProject.detail = req.body.detail;
     // missing tag, roles, contact for now
     newProject.owner = req.body.owner;
     newProject.location = req.body.location;
-
     await db.collection('Projects').insertOne(newProject);
 })
