@@ -30,10 +30,3 @@ module.exports = {
       }
     }
   }
-  
-  
-  
-  
-  
-  
-  
