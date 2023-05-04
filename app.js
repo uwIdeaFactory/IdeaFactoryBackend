@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors');
 const { connectToDb, getDb, closeDb } = require('./db/db')
+const {ObjectId } = require('mongodb');
 
 // initialize app
 const app = express()
@@ -8,10 +9,10 @@ const app = express()
 app.use(express.json());
 app.use(cors());
 
-// // listening port 3000
-// const server = app.listen(3000, () => {
-//     console.log('app listening on port 3000')
-// })
+// listening port 3000
+const server = app.listen(3000, () => {
+    console.log('app listening on port 3000')
+})
 
 // database object
 let db
@@ -63,14 +64,14 @@ app.get('/projects', connect, async (req, res) => {
         }).then(closeDb)
         .catch(() => {
             console.log('err')
-            res.status(500).json({err: '123'})
+            res.status(500).json({err: 'server error: failed to get all projects'})
         })
 })
 
 // api to post project
 app.post('/post', connect, async (req, res) => {
     let newProject = {};
-    console.log(req)
+    console.log(req);
     newProject.pname = req.body.pname;
 
     newProject.preview = req.body.preview;
@@ -81,6 +82,26 @@ app.post('/post', connect, async (req, res) => {
     
     await db.collection('Projects').insertOne(newProject);
     res.send('posted');
+})
+
+// api to remove project
+
+// api to provide detailed info for a specific project
+app.get('/projects/:id', connect, async (req, res) => {
+    try {
+        // console.log("searching for objectid = " + req.params.id);
+        let id = new ObjectId(req.params.id);
+        let projectFilter = {};
+        projectFilter._id = id;
+
+        let result = await db.collection('Projects').findOne(projectFilter);
+        res.json(result);
+    } catch(err) {
+        res.type("text").status(500);
+        res.send("server error.");
+    } finally {
+        closeDb;
+    }
 })
 
 module.exports = app;
