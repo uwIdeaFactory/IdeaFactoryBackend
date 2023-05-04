@@ -85,12 +85,14 @@ app.post('/post', connect, async (req, res) => {
 })
 
 // api to remove project
-app.delete('/delete/:id', connect, async (req, res) => {
+// **IMPORTANT: change app.get() to other http request**
+app.get('/delete/:id', connect, async (req, res) => {
     try {
         let id = new ObjectId(req.params.id);
         // let projectFilter = {};
         // projectFilter._id = id;
-        await db.collection('Projects').insertOne({ "_id" : id });
+        await db.collection('Projects').deleteOne({ "_id" : id });
+        res.send('removed')
     } catch(err) {
         res.type("text").status(500);
         res.send("server error: cannot delete the project with id: " + req.params.id);
