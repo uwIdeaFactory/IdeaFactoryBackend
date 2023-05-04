@@ -85,6 +85,19 @@ app.post('/post', connect, async (req, res) => {
 })
 
 // api to remove project
+app.delete('/delete/:id', connect, async (req, res) => {
+    try {
+        let id = new ObjectId(req.params.id);
+        // let projectFilter = {};
+        // projectFilter._id = id;
+        await db.collection('Projects').insertOne({ "_id" : id });
+    } catch(err) {
+        res.type("text").status(500);
+        res.send("server error: cannot delete the project with id: " + req.params.id);
+    } finally {
+        closeDb;
+    }
+})
 
 // api to provide detailed info for a specific project
 app.get('/projects/:id', connect, async (req, res) => {
@@ -98,7 +111,7 @@ app.get('/projects/:id', connect, async (req, res) => {
         res.json(result);
     } catch(err) {
         res.type("text").status(500);
-        res.send("server error.");
+        res.send("server error: cannot get info for the project with id: " + req.params.id);
     } finally {
         closeDb;
     }
