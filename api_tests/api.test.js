@@ -1,14 +1,6 @@
 const request = require('supertest');
 const app = require('../app'); // import your app.js file
-
-let server;
-
-beforeAll(done => {
-    server = app.listen(3000, () => {
-        console.log('Server started on port 3000');
-        done();
-    });
-})
+const server = require('../app');
 
 test('Get all users', async () => {
     const response = await request(app).get('/users'); // use app object to make requests
