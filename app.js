@@ -48,6 +48,24 @@ app.get('/users', connect, (req, res) => {
         })
 })
 
+// users
+
+// api to get a specific user
+app.get('/users/:uid', connect, async (req, res) => {
+    try {
+        let uid = new ObjectId(req.params.uid);
+        let userFilter = {};
+        userFilter._id = uid;
+        let result = await db.collection('Users').findOne(userFilter);
+        res.json(result);
+    } catch (err) {
+        res.type("text").status(500);
+        res.send("server error.");
+    } finally {
+        closeDb();
+    }
+})
+
 // projects
 
 // api to get all the projects
@@ -79,7 +97,7 @@ app.post('/post', connect, async (req, res) => {
     // missing tag, roles, contact for now
     newProject.owner = req.body.owner;
     newProject.location = req.body.location;
-    
+
     await db.collection('Projects').insertOne(newProject);
     res.send('posted');
 })
@@ -100,7 +118,7 @@ app.get('/projects/:id', connect, async (req, res) => {
         res.type("text").status(500);
         res.send("server error.");
     } finally {
-        closeDb;
+        closeDb();
     }
 })
 
