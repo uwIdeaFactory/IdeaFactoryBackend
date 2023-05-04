@@ -123,3 +123,4 @@ app.get('/projects/:id', connect, async (req, res) => {
 })
 
 module.exports = app;
+module.exports = server;
