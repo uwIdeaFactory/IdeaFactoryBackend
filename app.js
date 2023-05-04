@@ -48,7 +48,7 @@ app.get('/users', connect, (req, res) => {
         })
 })
 
-// users
+// User APIs
 
 // api to get a specific user
 app.get('/users/:uid', connect, async (req, res) => {
@@ -66,7 +66,7 @@ app.get('/users/:uid', connect, async (req, res) => {
     }
 })
 
-// projects
+// Project APIs
 
 // api to get all the projects
 app.get('/projects', connect, async (req, res) => {
@@ -84,6 +84,24 @@ app.get('/projects', connect, async (req, res) => {
             console.log('err')
             res.status(500).json({err: 'server error: failed to get all projects'})
         })
+})
+
+// api to get a specific project
+app.get('/projects/:id', connect, async (req, res) => {
+    try {
+        // console.log("searching for objectid = " + req.params.id);
+        let id = new ObjectId(req.params.id);
+        let projectFilter = {};
+        projectFilter._id = id;
+
+        let result = await db.collection('Projects').findOne(projectFilter);
+        res.json(result);
+    } catch(err) {
+        res.type("text").status(500);
+        res.send("server error: cannot get info for the project with id: " + req.params.id);
+    } finally {
+        closeDb();
+    }
 })
 
 // api to post project
@@ -116,24 +134,6 @@ app.get('/delete/:id', connect, async (req, res) => {
         res.send("server error: cannot delete the project with id: " + req.params.id);
     } finally {
         closeDb;
-    }
-})
-
-// api to provide detailed info for a specific project
-app.get('/projects/:id', connect, async (req, res) => {
-    try {
-        // console.log("searching for objectid = " + req.params.id);
-        let id = new ObjectId(req.params.id);
-        let projectFilter = {};
-        projectFilter._id = id;
-
-        let result = await db.collection('Projects').findOne(projectFilter);
-        res.json(result);
-    } catch(err) {
-        res.type("text").status(500);
-        res.send("server error: cannot get info for the project with id: " + req.params.id);
-    } finally {
-        closeDb();
     }
 })
 
