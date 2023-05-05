@@ -70,4 +70,5 @@ app.post('/post', connect, async (req, res) => {
     newProject.location = req.body.location;
     
     await db.collection('Projects').insertOne(newProject);
+    res.send('success');
 })
