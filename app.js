@@ -50,14 +50,16 @@ app.get('/users', connect, (req, res) => {
 
 // User APIs
 
-// api to get a specific user
-app.get('/users/:uid', connect, async (req, res) => {
+// api to get a specific user by uid
+app.get('/user/:uid', connect, async (req, res) => {
     try {
-        let uid = new ObjectId(req.params.uid);
+        // console.log("searching for objectid = " + req.params.uid);
+        let uid = req.params.uid;
         let userFilter = {};
-        userFilter._id = uid;
+        userFilter.uid = uid;
         let result = await db.collection('Users').findOne(userFilter);
         res.json(result);
+        console.log(result);
     } catch (err) {
         res.type("text").status(500);
         res.send("server error.");
