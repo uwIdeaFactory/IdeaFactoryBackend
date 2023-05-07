@@ -48,6 +48,19 @@ app.get('/users', connect, (req, res) => {
         })
 })
 
+// get count of projects
+app.get('/projects/count', connect, async (req, res) => {
+    try {
+        let result = await db.collection('Projects').countDocuments();
+        res.json(result);
+    } catch(err) {
+        res.type("text").status(500);
+        res.send("server error: cannot get count of projects");
+    } finally {
+        closeDb();
+    }
+})
+
 // User APIs
 
 // api to get a specific user by uid
@@ -74,18 +87,28 @@ app.get('/user/:uid', connect, async (req, res) => {
 app.get('/projects', connect, async (req, res) => {
     // let result = await db.collection('Projects').find().toArray();
     // res.json(result);
-    let result = []
-    db.collection('Projects')
-        .find()
-        .forEach(project => result.push(project))
-        .then(() => {
-            console.log('successful')
-            res.status(200).json(result)
-        }).then(closeDb)
-        .catch(() => {
-            console.log('err')
-            res.status(500).json({err: 'server error: failed to get all projects'})
-        })
+    const { page, pageSize } = req.query;
+    try {
+        const skip = (parseInt(page) - 1) * parseInt(pageSize);
+        const limit = parseInt(pageSize);
+        let result = await db.collection('Projects').find().skip(skip).limit(limit).toArray();
+        res.json(result);
+    } catch (err) {
+        res.type("text").status(500);
+        res.send("server error.");
+    }
+    // let result = []
+    // db.collection('Projects')
+    //     .find()
+    //     .forEach(project => result.push(project))
+    //     .then(() => {
+    //         console.log('successful')
+    //         res.status(200).json(result)
+    //     }).then(closeDb)
+    //     .catch(() => {
+    //         console.log('err')
+    //         res.status(500).json({err: 'server error: failed to get all projects'})
+    //     })
 })
 
 // api to get a specific project
