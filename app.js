@@ -97,22 +97,10 @@ app.get('/projects', connect, async (req, res) => {
         res.type("text").status(500);
         res.send("server error.");
     }
-    // let result = []
-    // db.collection('Projects')
-    //     .find()
-    //     .forEach(project => result.push(project))
-    //     .then(() => {
-    //         console.log('successful')
-    //         res.status(200).json(result)
-    //     }).then(closeDb)
-    //     .catch(() => {
-    //         console.log('err')
-    //         res.status(500).json({err: 'server error: failed to get all projects'})
-    //     })
 })
 
 // api to get a specific project
-app.get('/projects/:id', connect, async (req, res) => {
+app.get('/project/:id', connect, async (req, res) => {
     try {
         // console.log("searching for objectid = " + req.params.id);
         let id = new ObjectId(req.params.id);
@@ -161,6 +149,27 @@ app.get('/delete/:id', connect, async (req, res) => {
         closeDb;
     }
 })
+
+app.get('/projects/:text', connect, async (req, res) => {
+    const { page, pageSize } = req.query;
+    const searchText = req.params.text;
+    try {
+        const skip = (parseInt(page) - 1) * parseInt(pageSize);
+        const limit = parseInt(pageSize);
+        const query = { pname: { $regex: searchText, $options: 'i' } };
+        let result = await db
+            .collection('Projects')
+            .find(query) // Add text search filter
+            .skip(skip)
+            .limit(limit)
+            .toArray();
+        res.json(result);
+    } catch (err) {
+        res.type('text').status(500);
+        res.send('server error search.');
+    }
+});
+  
 
 module.exports = app;
 module.exports = server;
