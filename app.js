@@ -64,6 +64,18 @@ app.get('/projects/count', connect, async (req, res) => {
 // User APIs
 
 // api to get a specific user by uid
+app.post('/user/create', connect, async (req, res) => {
+    try {
+        let newUser = {};
+        newUser.uid = req.body.uid;
+        await db.collection('Users').insertOne(newUser);
+        res.send('create user successful');
+    } catch {
+        res.type("text").status(500);
+        res.send("server error.");
+    }
+})
+
 app.get('/user/:uid', connect, async (req, res) => {
     try {
         // console.log("searching for objectid = " + req.params.uid);
@@ -169,7 +181,7 @@ app.get('/projects/:text', connect, async (req, res) => {
         res.send('server error search.');
     }
 });
-  
+
 
 module.exports = app;
 module.exports = server;
