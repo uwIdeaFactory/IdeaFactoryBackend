@@ -108,6 +108,8 @@ app.get('/projects', connect, async (req, res) => {
     } catch (err) {
         res.type("text").status(500);
         res.send("server error.");
+    } finally {
+        closeDb();
     }
 })
 
@@ -143,6 +145,7 @@ app.post('/post', connect, async (req, res) => {
 
     await db.collection('Projects').insertOne(newProject);
     res.send('posted');
+    closeDb();
 })
 
 // api to remove project
@@ -158,7 +161,7 @@ app.get('/delete/:id', connect, async (req, res) => {
         res.type("text").status(500);
         res.send("server error: cannot delete the project with id: " + req.params.id);
     } finally {
-        closeDb;
+        closeDb();
     }
 })
 
@@ -179,6 +182,8 @@ app.get('/projects/:text', connect, async (req, res) => {
     } catch (err) {
         res.type('text').status(500);
         res.send('server error search.');
+    } finally {
+        closeDb();
     }
 });
 

@@ -61,7 +61,7 @@ expect(typeof response.body).toBe('number');
 test('Get user by uid', async () => {
 const response = await request(app).get('/user/J2lhMMs3P9UISWlzfhKIYj9xOIA3');
 expect(response.statusCode).toBe(200);
-expect(response.body.uid).toBe('123');
+expect(response.body.uid).toBe('J2lhMMs3P9UISWlzfhKIYj9xOIA3');
 });
 
 // test get all projects with pagination
@@ -77,7 +77,7 @@ expect(response.body.length >= 1).toBe(true);
 test('Get project by id', async () => {
 const response = await request(app).get('/project/645956360a166c315352a998');
 expect(response.statusCode).toBe(200);
-expect(response.body._id).toBe('123456789012345678901234');
+expect(response.body._id).toBe('645956360a166c315352a998');
 });
 
 // // test post project
@@ -103,8 +103,10 @@ expect(response.body._id).toBe('123456789012345678901234');
 // });
 
 afterAll(done => {
-server.close(() => {
-console.log('Server stopped');
-done();
-});
+    console.log('Closing server');
+    server.close(() => {
+        console.log('Server stopped');
+        done();
+    });
+    console.log('Server stopped1');
 });
