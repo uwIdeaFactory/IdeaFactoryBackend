@@ -16,8 +16,10 @@ test('Get all projects', async () => {
 });
 
 afterAll(done => {
+    console.log('Closing server');
     server.close(() => {
         console.log('Server stopped');
         done();
     });
+    console.log('Server stopped1');
 });
