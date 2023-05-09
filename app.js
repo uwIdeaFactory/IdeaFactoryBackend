@@ -59,6 +59,8 @@ app.get('/user/:uid', connect, async (req, res) => {
         userFilter.uid = uid;
         let result = await db.collection('Users').findOne(userFilter);
         res.json(result);
+        // print out the type of result in the console
+        console.log(typeof result);
         console.log(result);
     } catch (err) {
         res.type("text").status(500);
