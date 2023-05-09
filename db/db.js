@@ -15,7 +15,7 @@ module.exports = {
           return cb()
         })
         .catch((err) => {
-          // console.log('Error connecting to database', err)
+          console.log('Error connecting to database', err)
           return cb(err)
         })
     },

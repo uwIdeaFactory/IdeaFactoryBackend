@@ -48,9 +48,34 @@ app.get('/users', connect, (req, res) => {
         })
 })
 
+// get count of projects
+app.get('/projects/count', connect, async (req, res) => {
+    try {
+        let result = await db.collection('Projects').countDocuments();
+        res.json(result);
+    } catch(err) {
+        res.type("text").status(500);
+        res.send("server error: cannot get count of projects");
+    } finally {
+        closeDb();
+    }
+})
+
 // User APIs
 
 // api to get a specific user by uid
+app.post('/user/create', connect, async (req, res) => {
+    try {
+        let newUser = {};
+        newUser.uid = req.body.uid;
+        await db.collection('Users').insertOne(newUser);
+        res.send('create user successful');
+    } catch {
+        res.type("text").status(500);
+        res.send("server error.");
+    }
+})
+
 app.get('/user/:uid', connect, async (req, res) => {
     try {
         // console.log("searching for objectid = " + req.params.uid);
@@ -76,22 +101,22 @@ app.get('/user/:uid', connect, async (req, res) => {
 app.get('/projects', connect, async (req, res) => {
     // let result = await db.collection('Projects').find().toArray();
     // res.json(result);
-    let result = []
-    db.collection('Projects')
-        .find()
-        .forEach(project => result.push(project))
-        .then(() => {
-            console.log('successful')
-            res.status(200).json(result)
-        }).then(closeDb)
-        .catch(() => {
-            console.log('err')
-            res.status(500).json({err: 'server error: failed to get all projects'})
-        })
+    const { page, pageSize } = req.query;
+    try {
+        const skip = (parseInt(page) - 1) * parseInt(pageSize);
+        const limit = parseInt(pageSize);
+        let result = await db.collection('Projects').find().skip(skip).limit(limit).toArray();
+        res.json(result);
+    } catch (err) {
+        res.type("text").status(500);
+        res.send("server error.");
+    } finally {
+        closeDb();
+    }
 })
 
 // api to get a specific project
-app.get('/projects/:id', connect, async (req, res) => {
+app.get('/project/:id', connect, async (req, res) => {
     try {
         // console.log("searching for objectid = " + req.params.id);
         let id = new ObjectId(req.params.id);
@@ -122,6 +147,7 @@ app.post('/post', connect, async (req, res) => {
 
     await db.collection('Projects').insertOne(newProject);
     res.send('posted');
+    closeDb();
 })
 
 // api to remove project
@@ -137,9 +163,32 @@ app.get('/delete/:id', connect, async (req, res) => {
         res.type("text").status(500);
         res.send("server error: cannot delete the project with id: " + req.params.id);
     } finally {
-        closeDb;
+        closeDb();
     }
 })
+
+app.get('/projects/:text', connect, async (req, res) => {
+    const { page, pageSize } = req.query;
+    const searchText = req.params.text;
+    try {
+        const skip = (parseInt(page) - 1) * parseInt(pageSize);
+        const limit = parseInt(pageSize);
+        const query = { pname: { $regex: searchText, $options: 'i' } };
+        let result = await db
+            .collection('Projects')
+            .find(query) // Add text search filter
+            .skip(skip)
+            .limit(limit)
+            .toArray();
+        res.json(result);
+    } catch (err) {
+        res.type('text').status(500);
+        res.send('server error search.');
+    } finally {
+        closeDb();
+    }
+});
+
 
 module.exports = app;
 module.exports = server;
