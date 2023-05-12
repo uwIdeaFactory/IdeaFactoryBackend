@@ -82,10 +82,12 @@ app.post('/patchBasicInfo/:uid', connect, async (req, res) => {
     try {
         let uid = req.params.uid;
         let username = req.body.username;
+        let contact = req.body.contact;
+        let location = req.body.location;
         let summary = req.body.summary;
         let result = await db.collection('Users').updateOne(
             { uid: uid },
-            { $set: { username : username, bio : summary } }
+            { $set: { username : username, contact : contact, location : location, bio : summary } }
         );
         res.json(result);
     } catch (err) {
