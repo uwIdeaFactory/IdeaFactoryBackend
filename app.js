@@ -101,14 +101,29 @@ app.post('/patchBasicInfo/:uid', connect, async (req, res) => {
 })
 
 // api to update user's hosted projects
+app.post('/update/host', connect, async (req, res) => {
+    try {
+        let uid = req.body.uid;
+        let newHost = req.body.host;
+        let result = await db.collection('Users').updateOne(
+            { uid: uid },
+            { $push: { host: newHost } }
+        );
+        res.json(result);
+    } catch (err) {
+        res.type("text").status(500);
+        res.send("server error.");
+    } finally {
+        closeDb();
+    }
+});
+
 
 // api to update user's joined projects
 app.post('/update/attend', connect, async (req, res) => {
     try {
         let uid = req.body.uid;
         let newAttend = req.body.attend;
-        console.log(uid);
-        console.log(newAttend);
         let result = await db.collection('Users').updateOne(
             { uid: uid },
             { $push: { attend: newAttend } }
