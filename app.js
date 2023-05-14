@@ -63,7 +63,7 @@ app.get('/projects/count', connect, async (req, res) => {
 
 // User APIs
 
-// api to get a specific user by uid
+// api to create a new user
 app.post('/user/create', connect, async (req, res) => {
     try {
         let newUser = {};
@@ -76,6 +76,29 @@ app.post('/user/create', connect, async (req, res) => {
     }
 })
 
+// api to update user's info
+app.post('/patchBasicInfo/:uid', connect, async (req, res) => {
+    console.log('updating user profile...')
+    try {
+        let uid = req.params.uid;
+        let username = req.body.username;
+        let contact = req.body.contact;
+        let location = req.body.location;
+        let summary = req.body.summary;
+        let result = await db.collection('Users').updateOne(
+            { uid: uid },
+            { $set: { username : username, contact : contact, location : location, bio : summary } }
+        );
+        res.json(result);
+    } catch (err) {
+        res.type("text").status(500);
+        res.send("server error.");
+    } finally {
+        closeDb();
+    }
+})
+
+// api to get a specific user by uid
 app.get('/user/:uid', connect, async (req, res) => {
     try {
         // console.log("searching for objectid = " + req.params.uid);
