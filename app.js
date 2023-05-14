@@ -100,6 +100,28 @@ app.post('/patchBasicInfo/:uid', connect, async (req, res) => {
     }
 })
 
+// api to update user's hosted projects
+
+// api to update user's joined projects
+app.post('/update/attend', connect, async (req, res) => {
+    try {
+        let uid = req.body.uid;
+        let newAttend = req.body.attend;
+        console.log(uid);
+        console.log(newAttend);
+        let result = await db.collection('Users').updateOne(
+            { uid: uid },
+            { $push: { attend: newAttend } }
+        );
+        res.json(result);
+    } catch (err) {
+        res.type("text").status(500);
+        res.send("server error.");
+    } finally {
+        closeDb();
+    }
+});
+
 // api to get a specific user by uid
 app.get('/user/:uid', connect, async (req, res) => {
     try {
@@ -178,11 +200,9 @@ app.post('/post', connect, async (req, res) => {
 // api to update project
 app.post('/update/project', connect, async (req, res) => {
     try {
-        console.log(req.body.id);
         let id = new ObjectId(req.body.id);
         let projectFilter = {};
         projectFilter._id = id;
-        console.log(req.body);
         let update = {};
         update.pname = req.body.pname;
         update.preview = req.body.preview;
@@ -190,10 +210,8 @@ app.post('/update/project', connect, async (req, res) => {
         update.owner = req.body.owner;
         update.location = req.body.location;
         update.roles = req.body.roles;
-        console.log(update.roles);
 
         await db.collection('Projects').updateOne(projectFilter, { $set: update });
-        console.log('updated');
         res.send('updated');
     } catch(err) {
         res.type("text").status(500);
