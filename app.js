@@ -175,6 +175,34 @@ app.post('/post', connect, async (req, res) => {
     closeDb();
 })
 
+// api to update project
+app.post('/update/project', connect, async (req, res) => {
+    try {
+        console.log(req.body.id);
+        let id = new ObjectId(req.body.id);
+        let projectFilter = {};
+        projectFilter._id = id;
+        console.log(req.body);
+        let update = {};
+        update.pname = req.body.pname;
+        update.preview = req.body.preview;
+        update.detail = req.body.detail;
+        update.owner = req.body.owner;
+        update.location = req.body.location;
+        update.roles = req.body.roles;
+        console.log(update.roles);
+
+        await db.collection('Projects').updateOne(projectFilter, { $set: update });
+        console.log('updated');
+        res.send('updated');
+    } catch(err) {
+        res.type("text").status(500);
+        res.send("server error: cannot update the project with id: " + req.body.id);
+    } finally {
+        closeDb();
+    }
+});
+
 // api to remove project
 // **IMPORTANT: change app.get() to other http request**
 app.get('/delete/:id', connect, async (req, res) => {
