@@ -1,7 +1,7 @@
 const express = require('express')
 const cors = require('cors');
 const { connectToDb, getDb, closeDb } = require('./db/db')
-const {ObjectId } = require('mongodb');
+const { ObjectId } = require('mongodb');
 
 // initialize app
 const app = express()
@@ -44,7 +44,7 @@ app.get('/users', connect, (req, res) => {
         }).then(closeDb)
         .catch(() => {
             console.log('err')
-            res.status(500).json({err: '123'})
+            res.status(500).json({ err: '123' })
         })
 })
 
@@ -53,7 +53,7 @@ app.get('/projects/count', connect, async (req, res) => {
     try {
         let result = await db.collection('Projects').countDocuments();
         res.json(result);
-    } catch(err) {
+    } catch (err) {
         res.type("text").status(500);
         res.send("server error: cannot get count of projects");
     } finally {
@@ -68,6 +68,8 @@ app.post('/user/create', connect, async (req, res) => {
     try {
         let newUser = {};
         newUser.uid = req.body.uid;
+        newUser.attend = [];
+        newUser.host = [];
         await db.collection('Users').insertOne(newUser);
         res.send('create user successful');
     } catch {
@@ -76,7 +78,7 @@ app.post('/user/create', connect, async (req, res) => {
     }
 })
 
-// api to update user's info
+// api to update user's infoz
 app.post('/patchBasicInfo/:uid', connect, async (req, res) => {
     console.log('updating user profile...')
     try {
@@ -87,7 +89,7 @@ app.post('/patchBasicInfo/:uid', connect, async (req, res) => {
         let summary = req.body.summary;
         let result = await db.collection('Users').updateOne(
             { uid: uid },
-            { $set: { username : username, contact : contact, location : location, bio : summary } }
+            { $set: { username: username, contact: contact, location: location, bio: summary } }
         );
         res.json(result);
     } catch (err) {
@@ -148,7 +150,7 @@ app.get('/project/:id', connect, async (req, res) => {
 
         let result = await db.collection('Projects').findOne(projectFilter);
         res.json(result);
-    } catch(err) {
+    } catch (err) {
         res.type("text").status(500);
         res.send("server error: cannot get info for the project with id: " + req.params.id);
     } finally {
@@ -180,9 +182,9 @@ app.get('/delete/:id', connect, async (req, res) => {
         let id = new ObjectId(req.params.id);
         // let projectFilter = {};
         // projectFilter._id = id;
-        await db.collection('Projects').deleteOne({ "_id" : id });
+        await db.collection('Projects').deleteOne({ "_id": id });
         res.send('removed')
-    } catch(err) {
+    } catch (err) {
         res.type("text").status(500);
         res.send("server error: cannot delete the project with id: " + req.params.id);
     } finally {
