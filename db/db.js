@@ -10,7 +10,7 @@ module.exports = {
     connectToDb: (cb) => {
       MongoClient.connect(uri)
         .then((dbClient) => {
-          // console.log('Connected to database')
+          console.log('Connected to database')
           client = dbClient
           return cb()
         })
@@ -25,7 +25,7 @@ module.exports = {
     closeDb: () => {
       if (client) {
         client.close()
-          // .then(() => console.log('Connection to database closed'))
+          .then(() => console.log('Connection to database closed'))
           .catch((err) => console.log('Error closing connection to database', err))
       }
     }
