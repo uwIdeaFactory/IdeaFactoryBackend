@@ -195,24 +195,37 @@ app.get('/project/:id', connect, async (req, res) => {
     }
 })
 
-// api to post project
 app.post('/post', connect, async (req, res) => {
-    let newProject = {};
-    console.log(req);
-    newProject.pname = req.body.pname;
+    try {
+        const newProject = {
+            pname: req.body.pname,
+            preview: req.body.preview,
+            detail: req.body.detail,
+            owner: req.body.owner,
+            location: req.body.location,
+            roles: req.body.roles,
+        };
 
-    newProject.preview = req.body.preview;
-    newProject.detail = req.body.detail;
-    // missing tag, roles, contact for now
-    newProject.owner = req.body.owner;
-    newProject.location = req.body.location;
+        const { insertedId } = await db.collection('Projects').insertOne(newProject);
 
-    newProject.roles = req.body.roles;
+        const pid = insertedId.toString(); // Convert ObjectId to string
 
-    await db.collection('Projects').insertOne(newProject);
-    res.send('posted');
-    closeDb();
-})
+        let uid = req.body.user;
+        let newHost = pid;
+        await db.collection('Users').updateOne(
+            { uid: uid },
+            { $push: { host: newHost } }
+        );
+
+        res.json({ id: pid });
+    } catch (error) {
+        console.error('Error posting project:', error);
+        res.status(500).json({ error: 'Failed to post project.' });
+    } finally {
+        closeDb();
+    }
+});
+
 
 // api to update project
 app.post('/update/project', connect, async (req, res) => {
