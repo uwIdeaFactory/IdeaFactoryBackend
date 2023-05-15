@@ -34,8 +34,9 @@ app.get('/', (req, res) => {
 
 // sample route to fetch stuff from user collection
 app.get('/users', connect, (req, res) => {
-    let result = []
-    db.collection('Users')
+    try {
+        let result = []
+         db.collection('Users')  
         .find()
         .forEach(user => result.push(user))
         .then(() => {
@@ -46,6 +47,11 @@ app.get('/users', connect, (req, res) => {
             console.log('err')
             res.status(500).json({ err: '123' })
         })
+    } catch (err) {
+        console.log(err);
+    } finally {
+        closeDb();
+    }
 })
 
 // get count of projects
@@ -75,6 +81,8 @@ app.post('/user/create', connect, async (req, res) => {
     } catch {
         res.type("text").status(500);
         res.send("server error.");
+    } finally {
+        closeDb();
     }
 })
 
@@ -99,25 +107,6 @@ app.post('/patchBasicInfo/:uid', connect, async (req, res) => {
         closeDb();
     }
 })
-
-// api to update user's hosted projects
-app.post('/update/host', connect, async (req, res) => {
-    try {
-        let uid = req.body.uid;
-        let newHost = req.body.host;
-        let result = await db.collection('Users').updateOne(
-            { uid: uid },
-            { $push: { host: newHost } }
-        );
-        res.json(result);
-    } catch (err) {
-        res.type("text").status(500);
-        res.send("server error.");
-    } finally {
-        closeDb();
-    }
-});
-
 
 // api to update user's joined projects
 app.post('/update/attend', connect, async (req, res) => {
@@ -209,8 +198,10 @@ app.post('/post', connect, async (req, res) => {
         const { insertedId } = await db.collection('Projects').insertOne(newProject);
 
         const pid = insertedId.toString(); // Convert ObjectId to string
+        console.log('New project created with id:', pid);
 
-        let uid = req.body.user;
+        let uid = req.body.owner;
+        console.log('uid:', uid);
         let newHost = pid;
         await db.collection('Users').updateOne(
             { uid: uid },
