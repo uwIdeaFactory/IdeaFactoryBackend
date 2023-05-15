@@ -192,6 +192,8 @@ app.post('/post', connect, async (req, res) => {
     newProject.owner = req.body.owner;
     newProject.location = req.body.location;
 
+    newProject.roles = req.body.roles;
+
     await db.collection('Projects').insertOne(newProject);
     res.send('posted');
     closeDb();
@@ -213,7 +215,7 @@ app.post('/update/project', connect, async (req, res) => {
 
         await db.collection('Projects').updateOne(projectFilter, { $set: update });
         res.send('updated');
-    } catch(err) {
+    } catch (err) {
         res.type("text").status(500);
         res.send("server error: cannot update the project with id: " + req.body.id);
     } finally {
