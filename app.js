@@ -32,19 +32,6 @@ app.get('/', (req, res) => {
     res.send('sample route');
 });
 
-// get count of projects
-app.get('/projects/count', connect, async (req, res) => {
-    try {
-        let result = await db.collection('Projects').countDocuments();
-        res.json(result);
-    } catch (err) {
-        res.type("text").status(500);
-        res.send("server error: cannot get count of projects");
-    } finally {
-        closeDb();
-    }
-})
-
 // User APIs
 
 // api to create a new user
@@ -64,7 +51,7 @@ app.post('/user/create', connect, async (req, res) => {
     }
 })
 
-// api to update user's infoz
+// api to update user's info
 app.post('/patchBasicInfo/:uid', connect, async (req, res) => {
     try {
         let uid = req.params.uid;
@@ -251,6 +238,19 @@ app.get('/projects/:text', connect, async (req, res) => {
         closeDb();
     }
 });
+
+// get count of projects
+app.get('/projects/count', connect, async (req, res) => {
+    try {
+        let result = await db.collection('Projects').countDocuments();
+        res.json(result);
+    } catch (err) {
+        res.type("text").status(500);
+        res.send("server error: cannot get count of projects");
+    } finally {
+        closeDb();
+    }
+})
 
 
 module.exports = app;
