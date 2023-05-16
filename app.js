@@ -88,7 +88,6 @@ app.post('/user/create', connect, async (req, res) => {
 
 // api to update user's infoz
 app.post('/patchBasicInfo/:uid', connect, async (req, res) => {
-    console.log('updating user profile...')
     try {
         let uid = req.params.uid;
         let username = req.body.username;
@@ -130,15 +129,11 @@ app.post('/update/attend', connect, async (req, res) => {
 // api to get a specific user by uid
 app.get('/user/:uid', connect, async (req, res) => {
     try {
-        // console.log("searching for objectid = " + req.params.uid);
         let uid = req.params.uid;
         let userFilter = {};
         userFilter.uid = uid;
         let result = await db.collection('Users').findOne(userFilter);
         res.json(result);
-        // print out the type of result in the console
-        console.log(typeof result);
-        console.log(result);
     } catch (err) {
         res.type("text").status(500);
         res.send("server error.");
@@ -170,7 +165,6 @@ app.get('/projects', connect, async (req, res) => {
 // api to get a specific project
 app.get('/project/:id', connect, async (req, res) => {
     try {
-        // console.log("searching for objectid = " + req.params.id);
         let id = new ObjectId(req.params.id);
         let projectFilter = {};
         projectFilter._id = id;
@@ -199,10 +193,8 @@ app.post('/post', connect, async (req, res) => {
         const { insertedId } = await db.collection('Projects').insertOne(newProject);
 
         const pid = insertedId.toString(); // Convert ObjectId to string
-        console.log('New project created with id:', pid);
 
         let uid = req.body.owner;
-        console.log('uid:', uid);
         let newHost = pid;
         await db.collection('Users').updateOne(
             { uid: uid },
