@@ -32,28 +32,6 @@ app.get('/', (req, res) => {
     res.send('sample route');
 });
 
-// sample route to fetch stuff from user collection
-app.get('/users', connect, (req, res) => {
-    try {
-        let result = []
-         db.collection('Users')  
-        .find()
-        .forEach(user => result.push(user))
-        .then(() => {
-            console.log('successful')
-            res.status(200).json(result)
-        }).then(closeDb)
-        .catch(() => {
-            console.log('err')
-            res.status(500).json({ err: '123' })
-        })
-    } catch (err) {
-        console.log(err);
-    } finally {
-        closeDb();
-    }
-})
-
 // get count of projects
 app.get('/projects/count', connect, async (req, res) => {
     try {
