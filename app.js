@@ -148,6 +148,7 @@ app.post('/post', connect, async (req, res) => {
     try {
         const newProject = {
             pname: req.body.pname,
+            contact: req.body.contact,
             preview: req.body.preview,
             detail: req.body.detail,
             owner: req.body.owner,
