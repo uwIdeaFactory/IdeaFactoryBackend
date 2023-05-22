@@ -27,9 +27,10 @@ expect(response.statusCode).toBe(200);
 
 // test get user by uid
 test('Get user by uid', async () => {
-const response = await request(app).get('/user/oDRuTU8c0yQOb8nu3bOKqsEGoqk1');
+const response = await request(app).get('/user/fjafe3UN6kSmvJBQKADRHw1I7xG2');
 expect(response.statusCode).toBe(200);
-expect(response.body.uid).toBe('oDRuTU8c0yQOb8nu3bOKqsEGoqk1');
+console.log(response.body);
+expect(response.body.uid).toBe('fjafe3UN6kSmvJBQKADRHw1I7xG2');
 });
 
 // test get all projects with pagination
@@ -43,9 +44,9 @@ expect(response.body.length >= 1).toBe(true);
 
 // test get project by id
 test('Get project by id', async () => {
-const response = await request(app).get('/project/646180e054865bd7d0183221');
+const response = await request(app).get('/project/646ace18b6dc07f6940aaff6');
 expect(response.statusCode).toBe(200);
-expect(response.body._id).toBe('646180e054865bd7d0183221');
+expect(response.body._id).toBe('646ace18b6dc07f6940aaff6');
 });
 
 // // test post project

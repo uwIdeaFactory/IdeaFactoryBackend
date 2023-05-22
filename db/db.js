@@ -23,6 +23,8 @@ module.exports = {
     getDb: () => client.db(),
     //close database connection
     closeDb: () => {
+      console.log('Closing connection to database')
+      console.log(client)
       if (client) {
         client.close()
           // .then(() => console.log('Connection to database closed'))
